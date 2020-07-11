@@ -1,0 +1,12 @@
+{
+  "name": "WhatAISee",
+  "displayName": "WhatAISee",
+  "expo": {
+    "name": "WhatAISee",
+    "slug": "WhatAISee",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
