@@ -16,7 +16,7 @@ const HomeScreen = ({navigation}) => {
     <ImageBackground
       source={require('../images/backgrounds/Chitty.jpg')}
       style={{width: '100%', height: '100%'}}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.container}>
         <View style={styles.welcome}>
           <Text style={styles.sectionWelcomeMessage}>
