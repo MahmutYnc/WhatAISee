@@ -1,8 +1,18 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Slider} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+  PermissionsAndroid,
+  Platform,
+  Image,
+} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CameraRoll from '@react-native-community/cameraroll';
 
 const landmarkSize = 2;
 
@@ -12,6 +22,33 @@ const flashModeOrder = {
   auto: 'torch',
   torch: 'off',
 };
+
+async function hasAndroidPermission() {
+  try {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+    await PermissionsAndroid.request(permission);
+    Promise.resolve();
+  } catch (error) {
+    Promise.reject(error);
+  }
+}
+
+async function savePicture(data) {
+  console.log('log1');
+  if (!(await hasAndroidPermission())) {
+    return;
+  }
+
+  CameraRoll.save(data.uri, 'photo')
+    .then(onfulfilled => {
+      console.log('log3');
+      ToastAndroid.show(onfulfilled, ToastAndroid.SHORT);
+    })
+    .catch(error => {
+      console.log('log4');
+      ToastAndroid.show(`${error.message}`, ToastAndroid.SHORT);
+    });
+}
 
 const wbOrder = {
   auto: 'sunny',
@@ -95,6 +132,9 @@ export default class CameraScreen extends React.Component {
     if (this.camera) {
       this.camera.takePictureAsync().then(data => {
         console.log('data: ', data);
+        //save photo
+        hasAndroidPermission();
+        savePicture(data);
       });
     }
   };
@@ -262,6 +302,16 @@ export default class CameraScreen extends React.Component {
 
         {/* {this.renderLandmarks()} */}
       </RNCamera>
+    );
+  }
+  renderImage() {
+    return (
+      <View>
+        <Image source={{uri: this.state.path}} style={styles.preview} />
+        <Text style={styles.cancel} onPress={() => this.setState({path: null})}>
+          Cancel
+        </Text>
+      </View>
     );
   }
 
